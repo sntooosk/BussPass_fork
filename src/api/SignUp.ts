@@ -5,7 +5,7 @@ import { localizeErrorMap } from "../utils/firebase/firebaseTraslator";
 
 export const signUpApi = async (
   email: string,
-  password: string
+  password: string,
 ): Promise<UserCredential> => {
   try {
     return await createUserWithEmailAndPassword(auth, email, password);

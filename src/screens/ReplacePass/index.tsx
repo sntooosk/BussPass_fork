@@ -49,8 +49,10 @@ export default function ReplacePass() {
             </Pressable>
 
             <View style={styles.subContainer}>
-                <Pressable onPress={() => navigate("SignIn")}>
-                    <Text>Voltar</Text>
+                <Pressable 
+                style = {styles.subButton}
+                onPress={() => navigate("SignIn")}>
+                    <Text style = {styles.subTextButton}>Voltar</Text>
                 </Pressable>
             </View>
         </View>

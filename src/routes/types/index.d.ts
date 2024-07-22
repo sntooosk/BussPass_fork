@@ -8,8 +8,9 @@ export type propsNavigationStack = {
   // Tipos para as telas da Stack
 
   SignIn: undefined | any; // Tela de login
-  SignUp: undefined | any; // Tela de cadastro
+  SignUp: undefined | any; // Segunda tela de cadastro
   ReplacePass: undefined | any; // Tela de reset
+  CadDados: undefined | any; // Primeira tela de cadastro
 
 };
 

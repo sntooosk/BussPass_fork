@@ -7,6 +7,7 @@ import { propsStack } from '../../routes/types';
 
 export default function SignUp() {
     const [email, setEmail] = useState('');
+    const [cpf, setCpf] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRep, setPasswordRep] = useState('');
 
@@ -28,6 +29,16 @@ export default function SignUp() {
     return (
         <View style={styles.container}>
             <Text style={styles.formTitle}> Primeiro acesso </Text>
+
+            <TextInput
+                style={styles.formInput}
+                placeholder="E-mail de usuário"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                value={email}
+                onChangeText={setEmail}
+            />
 
             <TextInput
                 style={styles.formInput}

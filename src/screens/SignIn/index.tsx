@@ -57,7 +57,7 @@ export default function SignIn() {
       <View style={styles.subContainer}>
         <Pressable 
           style={styles.subButton}
-          onPress={() => navigate("SignUp")}
+          onPress={() => navigate("CadDados")}
         >
           <Text style={styles.subTextButton}>Cadastrar</Text>
         </Pressable>

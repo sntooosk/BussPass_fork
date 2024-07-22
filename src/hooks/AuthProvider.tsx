@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(false);
   }
 
-  async function signIn({ email, password }: Credentials) {
+  async function signIn({ email, password}: Credentials) {
     try {
       setIsLoading(true);
       const { user } = await signInApi(email, password);
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
 
-  async function signUp({ email, password }: Credentials) {
+  async function signUp({ email, password}: Credentials) {
     setIsLoading(true);
     try {
       await signUpApi(email, password);

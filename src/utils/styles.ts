@@ -46,10 +46,12 @@ export const styles = StyleSheet.create({
     subContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         width: '80%',
     },
 
     subButton: {
+        alignItems: 'center',
         padding: 10,
     },
 
