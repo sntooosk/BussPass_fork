@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import { styles } from "../../../utils/styles";
 import { useAuth } from "../../../context/AuthContext";
+import CadDados from "../../cadDados";
 
 export default function Configuracao() {
 
@@ -18,6 +19,12 @@ export default function Configuracao() {
                 onPress={userLogout}
             >
                 <Text style={styles.textButton}> Logout </Text>
+            </Pressable>
+
+            <Pressable 
+            style = {styles.formButton}
+            onPress={CadDados} >
+                <Text style = {styles.textButton}> Cadastrar Dados </Text>
             </Pressable>
         </View>
     )

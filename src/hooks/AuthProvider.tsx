@@ -1,12 +1,15 @@
-
 import React, { useEffect, useState, ReactNode } from "react";
 import { Alert } from "react-native";
 import { AuthContext } from "../context/AuthContext";
+import {
+  asyncGetUser,
+  asyncRemoveUser,
+  asyncSetUser,
+} from "../utils/storage/AuthStorage";
 import { User } from "firebase/auth";
 import Credentials from "../models/Credentials";
 import { signUpApi } from "../api/SignUp";
 import { signInApi } from "../api/SignIn";
-import { asyncGetUser, asyncRemoveUser, asyncSetUser } from "../utils/storage/AuthStorage";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -25,18 +28,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const user = await asyncGetUser();
     if (user) {
       setAuthData(user);
-      console.log(user)
     }
     setIsLoading(false);
   }
 
-  async function signIn({ email, password}: Credentials) {
+  async function signIn({ email, password }: Credentials) {
     try {
       setIsLoading(true);
       const { user } = await signInApi(email, password);
       await asyncSetUser(user);
       setAuthData(user);
-      console.log(user)
     } catch (err: any) {
       Alert.alert("Atenção", err.message);
     } finally {
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
 
-  async function signUp({ email, password}: Credentials) {
+  async function signUp({ email, password }: Credentials) {
     setIsLoading(true);
     try {
       await signUpApi(email, password);
