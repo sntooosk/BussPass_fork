@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native";
-import { styles } from "../../../utils/styles";
-import { useAuth } from "../../../context/AuthContext";
+import { styles } from "../../utils/styles";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Carteira() {
 

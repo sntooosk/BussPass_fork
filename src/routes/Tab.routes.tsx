@@ -5,10 +5,11 @@ import { Feather } from "@expo/vector-icons";
 import { Settings, StatusBar } from "react-native";
 import { propsNavigationStack } from "./types";
 import Home from "../screens/Home";
-import Carteira from "../screens/Tab/Carteira";
-import Notificacao from "../screens/Tab/Notificacao";
-import Configuracao from "../screens/Tab/Settings";
-import Relatorio from "../screens/Tab/Relatorio";
+import Carteira from "../screens/Carteira";
+import Notificacao from "../screens/Notificacao";
+import Configuracao from "../screens/Profile";
+import Relatorio from "../screens/Relatorio";
+import Profile from "../screens/Profile";
 
 
 const { Navigator, Screen } = createBottomTabNavigator<propsNavigationStack>();
@@ -94,12 +95,12 @@ export default function TabRoutes() {
 
 
         <Screen
-          name="Configuracao"
-          component={Configuracao}
+          name="Profile"
+          component={Profile}
           options={{
             tabBarIcon: ({ focused, size }) => (
               <Feather
-                name="settings"
+                name="user"
                 size={focused ? size + 10 : size} color={focused
                   ? "#000" :
                   "#999"}
