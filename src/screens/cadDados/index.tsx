@@ -11,11 +11,11 @@ const insertMaskInCpf = (cpf: string): string => {
 };
 
 export default function CadDados() {
-    const [name, setName] = useState<string>("");
-    const [lastName, setLastName] = useState<string>("");
-    const [dob, setDob] = useState<string>("");
-    const [number, setNumber] = useState<string>("");
-    const [cpf, setCpf] = useState<string>("");
+    const [name, setName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [dob, setDob] = useState("");
+    const [number, setNumber] = useState("");
+    const [cpf, setCpf] = useState("");
 
     const navigation = useNavigation<propsStack>();
     const { cadDados, isLoading } = useAuth();
@@ -37,10 +37,6 @@ export default function CadDados() {
         }
         return inputValue;
     };
-
-    //const handleSignUp = () => {
-     //   cadDados({ name, lastName, dob, number, cpf });
-   // };
 
     return (
         <View style={styles.container}>
