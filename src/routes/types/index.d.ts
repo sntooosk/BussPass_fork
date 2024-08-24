@@ -15,6 +15,10 @@ export type propsNavigationStack = {
   Notificacao: undefined | any; // Tela das notificação
   Relatorio: undefined | any; // Tela do repositorio
   Configuracao: undefined | any; // Tela das configuração
+  AddCard: undefined | any; // Tela adicionar cartao
+  TelaPrincipal: undefined | any; // Tela principal 
+  Recarga: undefined | any; //Tela de Recarga
+
 };
 
 export type propsStack = NativeStackNavigationProp<propsNavigationStack>;

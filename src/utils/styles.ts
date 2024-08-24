@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     container: {
 
         flex: 1,    
-        backgroundColor: '#fff',
+        backgroundColor: '#11181E',
         alignItems: 'center',
         justifyContent: 'center',
 
@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     formTitle: {
         fontSize: 36,
         fontWeight: 'bold',
-        color: '#11181E',
+        color: '#fff',
         margin: 10,
     },
 
@@ -22,14 +22,15 @@ export const styles = StyleSheet.create({
         width: '80%',
         padding: 10,
         marginVertical: 10,
-        borderColor: '#11181E',
+        borderColor: '#fff',
         borderWidth: 1,
         borderRadius: 12,
+        color: '#fff',
         fontSize: 22,
     },
 
     formButton: {
-        backgroundColor: '#11181E',
+        backgroundColor: '#fff',
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
@@ -38,7 +39,7 @@ export const styles = StyleSheet.create({
     },
 
     textButton: {
-        color: 'white',
+        color: '#11181E',
         fontSize: 20,
         fontWeight: 'bold',
     },
@@ -56,7 +57,7 @@ export const styles = StyleSheet.create({
     },
 
     subTextButton: {
-        color: '#11181E',
+        color: '#fff',
     },
 
     formImage: {

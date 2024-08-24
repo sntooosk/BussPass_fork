@@ -33,6 +33,7 @@ export default function SignUp() {
             <TextInput
                 style={styles.formInput}
                 placeholder="E-mail de usuário"
+                placeholderTextColor="#fff" 
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoComplete="email"
@@ -43,6 +44,7 @@ export default function SignUp() {
             <TextInput
                 style={styles.formInput}
                 placeholder="E-mail de usuário"
+                placeholderTextColor="#fff" 
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoComplete="email"
@@ -53,6 +55,7 @@ export default function SignUp() {
             <TextInput
                 style={styles.formInput}
                 placeholder="Senha de usuário"
+                placeholderTextColor="#fff" 
                 autoCapitalize="none"
                 secureTextEntry
                 value={password}
@@ -62,6 +65,7 @@ export default function SignUp() {
             <TextInput
                 style={styles.formInput}
                 placeholder="Repita a senha"
+                placeholderTextColor="#fff" 
                 autoCapitalize="none"
                 secureTextEntry
                 value={passwordRep}

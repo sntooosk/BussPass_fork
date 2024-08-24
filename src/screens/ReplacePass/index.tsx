@@ -29,6 +29,7 @@ export default function ReplacePass() {
             <TextInput
                 style={styles.formInput}
                 placeholder="Informe o E-mail"
+                placeholderTextColor="#fff" 
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoComplete="email"

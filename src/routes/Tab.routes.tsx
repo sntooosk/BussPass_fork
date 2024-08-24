@@ -4,12 +4,13 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import { Settings, StatusBar } from "react-native";
 import { propsNavigationStack } from "./types";
-import Home from "../screens/Home";
+import TelaPrincipal from "../screens/TelaPrincipal";
 import Carteira from "../screens/Carteira";
 import Notificacao from "../screens/Notificacao";
 import Configuracao from "../screens/Profile";
 import Relatorio from "../screens/Relatorio";
 import Profile from "../screens/Profile";
+import AddCard from "src/screens/AddCard";
 
 
 const { Navigator, Screen } = createBottomTabNavigator<propsNavigationStack>();
@@ -28,8 +29,8 @@ export default function TabRoutes() {
       >
 
         <Screen
-          name="Home"
-          component={Home}
+          name="TelaPrincipal"
+          component={TelaPrincipal}
           options={{
             tabBarIcon: ({ focused, size }) => (
               <Feather
