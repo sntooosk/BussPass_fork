@@ -1,67 +1,71 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 20,
-      backgroundColor: '#FFF',
-    },
-    backButton: {
-      position: 'absolute',
-      top: 40,
-      left: 20,
-    },
-    amountText: {
-      fontSize: 32,
-      fontWeight: 'bold',
-      color: '#4E3D8D',
-      marginBottom: 20,
-    },
-    bankSelector: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#F1F1F1',
-      padding: 10,
-      borderRadius: 10,
-      marginBottom: 30,
-      width: '80%',
-      justifyContent: 'space-between',
-    },
-    bankText: {
-      fontSize: 16,
-      color: '#4E3D8D',
-    },
-    keyboard: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-      width: '80%',
-    },
-    key: {
-      width: '30%',
-      padding: 20,
-      margin: 5,
-      alignItems: 'center',
-      backgroundColor: '#EFEFEF',
-      borderRadius: 10,
-    },
-    keyText: {
-      fontSize: 24,
-      color: '#4E3D8D',
-    },
-    transferButton: {
-      marginTop: 30,
-      backgroundColor: '#4E3D8D',
-      paddingVertical: 15,
-      paddingHorizontal: 40,
-      borderRadius: 10,
-    },
-    transferText: {
-      fontSize: 18,
-      color: '#FFF',
-      fontWeight: 'bold',
-    },
-  });
+
+
+container: {
+    flex: 1,
+    backgroundColor: '#11181E',
+    alignItems: 'center',
+    padding: 20,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 20,
+  },
+  amount: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#4E3D8D',
+    marginBottom: 20,
+  },
+  bankSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    marginBottom: 30,
+    width: '100%',
+    justifyContent: 'space-between',
+  },
+  bankText: {
+    fontSize: 18,
+    color: '#4E3D8D',
+  },
+  numPad: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginBottom: 30,
+  },
+  numButton: {
+    width: '30%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+    borderRadius: 10,
+    backgroundColor: '#FFF',
+    elevation: 1,
+  },
+  numText: {
+    fontSize: 24,
+    color: '#4E3D8D',
+    fontWeight: 'bold',
+  },
+  transferButton: {
+    backgroundColor: '#4E3D8D',
+    paddingVertical: 15,
+    paddingHorizontal: 80,
+    borderRadius: 10,
+    marginTop: -60,
+  },
+  transferButtonText: {
+    fontSize: 18,
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+});

@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { FontAwesome } from '@expo/vector-icons';
 import ProfileImage from "../components/ProfileImage";
 import { getAuth, User } from "firebase/auth";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
@@ -18,11 +19,15 @@ import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "../../context/AuthContext";
 import { styles } from "./styles";
+import { useNavigation } from "@react-navigation/native";
+import { propsStack } from "src/routes/types";
 
 export default function Profile() {
   const auth = getAuth();
   const { signOut } = useAuth();
   const user: User | null = auth.currentUser;
+
+  const { navigate } = useNavigation<propsStack>();
 
   const [photo, setPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState("");
@@ -175,32 +180,44 @@ export default function Profile() {
   };
 
   return (
+
+
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
+      <View style={styles.header}>
+                <Pressable
+                    onPress={() => navigate("Home")}>
+                    <FontAwesome name="arrow-left" size={24} color="#4E3D8D" />
+                </Pressable>
+            </View>
         <Text style={styles.formTitle}>Cadastrar Dados</Text>
         <ProfileImage photo={photo} onPress={handleChoosePhoto} />
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <TextInput
             style={styles.formInput}
             placeholder="Nome de usuário"
+            placeholderTextColor="#fff" 
             onChangeText={setUsername}
             value={username}
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu nome"
+            placeholderTextColor="#fff" 
             onChangeText={setName}
             value={name}
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu sobrenome"
+            placeholderTextColor="#fff" 
             onChangeText={setLastName}
             value={lastName}
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu CPF"
+            placeholderTextColor="#fff" 
             keyboardType="numeric"
             value={cpf}
             onChangeText={(text) => setCpf(insertMaskInCpf(text))}
@@ -208,6 +225,7 @@ export default function Profile() {
           <TextInput
             style={styles.formInput}
             placeholder="Digite sua data de nascimento"
+            placeholderTextColor="#fff" 
             onChangeText={(text) => setDob(formatBirthdateInput(text))}
             value={dob}
             keyboardType="numeric"
@@ -215,6 +233,7 @@ export default function Profile() {
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu número de celular"
+            placeholderTextColor="#fff"
             onChangeText={(text) => setNumber(formatNumberInput(text))}
             value={number}
             keyboardType="phone-pad"

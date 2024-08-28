@@ -4,8 +4,9 @@ import { propsNavigationStack } from "./types";
 import SignIn from "src/screens/SignIn";
 import SignUp from "src/screens/signUp";
 import ReplacePass from "src/screens/ReplacePass";
-import AddCard from "src/screens/AddCard";
-import Recarga from "src/screens/Recarga";
+import AddCard from "src/screens/Card/AddCard";
+import Profile from "src/screens/Profile";
+import Home from "src/screens/Home";
 
 const { Screen, Navigator } =
   createNativeStackNavigator<propsNavigationStack>();
@@ -29,16 +30,7 @@ export default function StackRoutes() {
         component={ReplacePass}
         options={{ headerShown: false, gestureEnabled: false }}
       />
-      <Screen
-        name="AddCard"
-        component={AddCard}
-        options={{ headerShown: false, gestureEnabled: false }}
-      />
-       <Screen
-        name="Recarga"
-        component={Recarga}
-        options={{ headerShown: false, gestureEnabled: false }}
-      />
+     
     </Navigator>
   );
 }

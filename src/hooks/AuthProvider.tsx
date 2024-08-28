@@ -11,6 +11,7 @@ import Credentials from "../models/Credentials";
 import { signUpApi } from "../api/SignUp";
 import { signInApi } from "../api/SignIn";
 
+
 interface AuthProviderProps {
   children: ReactNode;
 }

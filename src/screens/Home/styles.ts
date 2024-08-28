@@ -1,9 +1,10 @@
 import { StyleSheet, Platform } from 'react-native';
 
 export const styles = StyleSheet.create({
+
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: '#11181E',
     padding: 16,
   },
   header: {
@@ -15,11 +16,11 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
   },
   status: {
     fontSize: 16,
-    color: '#11181E',
+    color: '#4E3D8D',
     alignItems: 'center',
   },
   profileImage: {
@@ -28,7 +29,7 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
   },
   balanceCard: {
-    backgroundColor: '#11181E',
+    backgroundColor: '#4E3D8D',
     borderRadius: 20,
     padding: 24,
     marginBottom: 24,
@@ -63,11 +64,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionText: {
-    color: '#11181E',
+    color: '#fff',
     marginTop: 8,
   },
   transactionContainer: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#11181E',
     borderRadius: 20,
     padding: 16,
     marginBottom: 24,
@@ -80,10 +81,10 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
   },
   viewAllText: {
-    color: '#11181E',
+    color: '#fff',
   },
   transactionList: {
     marginBottom: 16,
@@ -100,12 +101,12 @@ export const styles = StyleSheet.create({
   transactionName: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: '#fff',
   },
   transactionAmount: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff'
   },
   bottomNav: {
     flexDirection: 'row',

@@ -1,59 +1,66 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Pressable, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Pressable, Alert } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { propsStack } from '../../routes/types';
-import { MaterialIcons } from '@expo/vector-icons';
 import { styles } from './styles';
 
-export default function Recarga() {
-  const [amount, setAmount] = useState<string>("1200"); // Valor inicial mostrado na tela
-  const navigation = useNavigation<propsStack>();
+export default function TransferScreen() {
+    const { navigate } = useNavigation<propsStack>();
+    const [amount, setAmount] = useState('');
 
-  const handleNumberPress = (number: string) => {
-    setAmount((prev) => (prev === "0" ? number : prev + number));
-  };
+    const handleTransfer = () => {
+        // Exibir o alerta
+        Alert.alert('Recarregado com sucesso');
+    
+        // Zerar o valor digitado
+        setAmount('');
+      };
 
-  const handleBackspace = () => {
-    setAmount((prev) => prev.slice(0, -1) || "0");
-  };
+    const handlePress = (value: string) => {
+        setAmount(prev => prev + value);
+    };
 
-  const handleTransfer = () => {
-    // Lógica para realizar a transferência
-    console.log("Transferir", amount);
-  };
+    const handleDelete = () => {
+        setAmount(prev => prev.slice(0, -1));
+    };
 
-  return (
-    <View style={styles.container}>
-      <Pressable onPress={() => navigation.goBack()} style={styles.backButton}>
-        <MaterialIcons name="arrow-back" size={24} color="#4E3D8D" />
-      </Pressable>
+    return (
+        <View style={styles.container}>
+       
+            <TouchableOpacity style={styles.backButton} onPress={() => navigate("Home")}>
+                <FontAwesome name="arrow-left" size={24} color="#4E3D8D" />
+            </TouchableOpacity>
 
-      <Text style={styles.amountText}>${amount}</Text>
-      
-      <View style={styles.bankSelector}>
-        <Text style={styles.bankText}>Mobank</Text>
-        <MaterialIcons name="arrow-drop-down" size={24} color="#4E3D8D" />
-      </View>
+           
+            <Text style={styles.amount}>${amount}</Text>
 
-      {/* Teclado numérico personalizado */}
-      <View style={styles.keyboard}>
-        {["1", "2", "3", "4", "5", "6", "7", "8", "9", "00", "0"].map((number) => (
-          <TouchableOpacity
-            key={number}
-            style={styles.key}
-            onPress={() => handleNumberPress(number)}
-          >
-            <Text style={styles.keyText}>{number}</Text>
-          </TouchableOpacity>
-        ))}
-        <TouchableOpacity style={styles.key} onPress={handleBackspace}>
-          <MaterialIcons name="backspace" size={24} color="#4E3D8D" />
-        </TouchableOpacity>
-      </View>
+           
+            <Pressable style={styles.bankSelector}>
+                <Text style={styles.bankText}>BussPass</Text>
+                <FontAwesome name="chevron-down" size={16} color="#999" />
+            </Pressable>
 
-      <Pressable style={styles.transferButton} onPress={handleTransfer}>
-        <Text style={styles.transferText}>Transfer</Text>
-      </Pressable>
-    </View>
-  );
+
+            <View style={styles.numPad}>
+                {['1', '2', '3', '4', '5', '6', '7', '8', '9', '00', '0'].map((num, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        style={styles.numButton}
+                        onPress={() => handlePress(num)}
+                    >
+                        <Text style={styles.numText}>{num}</Text>
+                    </TouchableOpacity>
+                ))}
+                <TouchableOpacity style={styles.numButton} onPress={handleDelete}>
+                    <FontAwesome name="trash" size={24} color="#4E3D8D" />
+                </TouchableOpacity>
+            </View>
+
+        
+            <TouchableOpacity style={styles.transferButton} onPress={handleTransfer}>
+                <Text style={styles.transferButtonText}>Recarregar</Text>
+            </TouchableOpacity>
+        </View>
+    );
 }
