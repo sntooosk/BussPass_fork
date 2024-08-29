@@ -21,6 +21,8 @@ import { useAuth } from "../../context/AuthContext";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { propsStack } from "src/routes/types";
+import { asyncGetUserProfile, asyncSetUserProfile } from "src/utils/storage/UserStorage";
+import { UserProfile } from "src/models/UserProfile";
 
 export default function Profile() {
   const auth = getAuth();
@@ -64,29 +66,19 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        if (user) {
-          const userRef = doc(collection(db, "users"), user.uid);
-          const userDoc = await getDoc(userRef);
 
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            setUsername(userData.username || "");
-            setName(userData.name || "");
-            setLastName(userData.lastName || "");
-            setDob(userData.dob || "");
-            setPhoto(userData.photo || null);
-            setCpf(userData.cpf || "");
-            setNumber(userData.number || "");
-          }
-        }
-      } catch (error) {
-        Alert.alert("Erro", "Houve um erro ao carregar os dados do usuário.");
-      }
-    };
+      const userProfile = await asyncGetUserProfile();
 
+      setUsername(userProfile?.username || "");
+      setName(userProfile?.name || "");
+      setLastName(userProfile?.lastName || "");
+      setDob(userProfile?.dob || "");
+      setPhoto(userProfile?.photo || null);
+      setCpf(userProfile?.cpf || "");
+      setNumber(userProfile?.number || "");
+    }
     fetchUserData();
-  }, [user]);
+  }, []);
 
   const handleChoosePhoto = async () => {
     try {
@@ -184,40 +176,40 @@ export default function Profile() {
 
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
-      <View style={styles.header}>
-                <Pressable
-                    onPress={() => navigate("Home")}>
-                    <FontAwesome name="arrow-left" size={24} color="#4E3D8D" />
-                </Pressable>
-            </View>
+        <View style={styles.header}>
+          <Pressable
+            onPress={() => navigate("Home")}>
+            <FontAwesome name="arrow-left" size={24} color="#4E3D8D" />
+          </Pressable>
+        </View>
         <Text style={styles.formTitle}>Cadastrar Dados</Text>
         <ProfileImage photo={photo} onPress={handleChoosePhoto} />
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <TextInput
             style={styles.formInput}
             placeholder="Nome de usuário"
-            placeholderTextColor="#fff" 
+            placeholderTextColor="#fff"
             onChangeText={setUsername}
             value={username}
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu nome"
-            placeholderTextColor="#fff" 
+            placeholderTextColor="#fff"
             onChangeText={setName}
             value={name}
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu sobrenome"
-            placeholderTextColor="#fff" 
+            placeholderTextColor="#fff"
             onChangeText={setLastName}
             value={lastName}
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu CPF"
-            placeholderTextColor="#fff" 
+            placeholderTextColor="#fff"
             keyboardType="numeric"
             value={cpf}
             onChangeText={(text) => setCpf(insertMaskInCpf(text))}
@@ -225,7 +217,7 @@ export default function Profile() {
           <TextInput
             style={styles.formInput}
             placeholder="Digite sua data de nascimento"
-            placeholderTextColor="#fff" 
+            placeholderTextColor="#fff"
             onChangeText={(text) => setDob(formatBirthdateInput(text))}
             value={dob}
             keyboardType="numeric"

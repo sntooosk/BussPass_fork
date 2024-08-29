@@ -1,15 +1,11 @@
 import React, { useEffect, useState, ReactNode } from "react";
 import { Alert } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import {
-  asyncGetUser,
-  asyncRemoveUser,
-  asyncSetUser,
-} from "../utils/storage/AuthStorage";
 import { User } from "firebase/auth";
 import Credentials from "../models/Credentials";
 import { signUpApi } from "../api/SignUp";
 import { signInApi } from "../api/SignIn";
+import { asyncGetAuth, asyncRemoveAuth, asyncSetAuth } from "src/utils/storage/AuthStorage";
 
 
 interface AuthProviderProps {
@@ -26,7 +22,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   async function loadFromStorage() {
     setIsLoading(true);
-    const user = await asyncGetUser();
+    const user = await asyncGetAuth();
     if (user) {
       setAuthData(user);
     }
@@ -37,7 +33,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setIsLoading(true);
       const { user } = await signInApi(email, password);
-      await asyncSetUser(user);
+      await asyncSetAuth(user);
       setAuthData(user);
     } catch (err: any) {
       Alert.alert("Atenção", err.message);
@@ -71,7 +67,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           text: "Sair",
           onPress: async () => {
             setAuthData(undefined);
-            await asyncRemoveUser();
+            await asyncRemoveAuth();
           },
         },
       ],

@@ -40,11 +40,7 @@ export default function StackIncRoutes() {
         component={Recarga}
         options={{ headerShown: false, gestureEnabled: false }}
       />
-       <Screen
-        name="SignIn"
-        component={SignIn}
-        options={{ headerShown: false, gestureEnabled: false }}
-      />
+
     </Navigator>
   );
 }
