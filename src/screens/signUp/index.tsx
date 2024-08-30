@@ -43,17 +43,6 @@ export default function SignUp() {
 
             <TextInput
                 style={styles.formInput}
-                placeholder="E-mail de usuário"
-                placeholderTextColor="#fff" 
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                value={email}
-                onChangeText={setEmail}
-            />
-
-            <TextInput
-                style={styles.formInput}
                 placeholder="Senha de usuário"
                 placeholderTextColor="#fff" 
                 autoCapitalize="none"

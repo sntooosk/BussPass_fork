@@ -57,8 +57,12 @@ export default function Profile() {
   };
 
   const insertMaskInCpf = (cpf: string): string => {
-    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-  };
+  
+    const cleanedCpf = cpf.replace(/\D/g, '');
+
+    return cleanedCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+};
+
 
   const userLogout = () => {
     signOut();

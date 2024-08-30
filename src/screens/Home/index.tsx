@@ -41,7 +41,7 @@ export default function Home() {
   const fetchUserCardData = useCallback(async () => {
     try {
       if (user) {
-        const cardRef = doc(collection(db, "saldoCard"), user.uid);
+        const cardRef = doc(collection(db, "cardsDados"), user.uid);
         const cardDoc = await getDoc(cardRef);
   
         if (cardDoc.exists()) {
@@ -96,13 +96,6 @@ export default function Home() {
       </View>
 
       <View style={styles.actionRow}>
-        <Pressable
-          style={styles.actionButton}
-
-          >
-          <MaterialIcons name="swap-horiz" size={24} color="#fff" />
-          <Text style={styles.actionText}>Transferência</Text>
-        </Pressable>
 
         <Pressable
           style={styles.actionButton}

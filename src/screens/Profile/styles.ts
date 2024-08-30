@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
   },
 
   container: {
+    marginTop: 22,
     flex: 1,
     padding: 16,
     backgroundColor: '#11181E',
@@ -27,6 +28,12 @@ export const styles = StyleSheet.create({
     color: '#fff',
     marginBottom: 12,
   },
+
+  buttonVoltar: {
+    marginTop: 30,
+
+  },
+
   formButton: {
     backgroundColor: '#007bff',
     paddingVertical: 12,

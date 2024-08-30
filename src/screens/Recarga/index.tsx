@@ -19,7 +19,7 @@ export default function TransferScreen() {
     useEffect(() => {
         const fetchSaldo = async () => {
             if (user) {
-                const userRef = doc(collection(db, "saldoCard"), "SU7KLsE7w56P4iOrgAC4");
+                const userRef = doc(collection(db, "cardsDados"), user.uid);
                 const docSnap = await getDoc(userRef);
                 if (docSnap.exists()) {
                     setSaldo(docSnap.data().saldo.toString() || '0');
@@ -51,7 +51,7 @@ export default function TransferScreen() {
             }
 
             if (user) {
-                const userRef = doc(collection(db, "saldoCard"), user.uid);
+                const userRef = doc(collection(db, "cardsDados"), user.uid);
                 const docSnap = await getDoc(userRef);
 
                 let currentSaldo = 0;
@@ -70,7 +70,7 @@ export default function TransferScreen() {
                 );
 
                 Alert.alert("Sucesso", "Saldo recarregado");
-                setSaldo(''); // Limpar o campo de saldo após a recarga
+                setSaldo(''); 
             }
         } catch (error) {
             Alert.alert(

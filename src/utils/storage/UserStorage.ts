@@ -19,3 +19,7 @@ export const asyncGetUserProfile = async (): Promise<UserProfile | null> => {
     return null;
   }
 };
+
+export const asyncRemoveUser = async () => {
+  await AsyncStorage.removeItem("userProfile");
+};
