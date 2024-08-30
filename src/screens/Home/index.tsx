@@ -41,7 +41,7 @@ export default function Home() {
   const fetchUserCardData = useCallback(async () => {
     try {
       if (user) {
-        const cardRef = doc(collection(db, "cardsDados"), user.uid);
+        const cardRef = doc(collection(db, "saldoCard"), user.uid);
         const cardDoc = await getDoc(cardRef);
   
         if (cardDoc.exists()) {

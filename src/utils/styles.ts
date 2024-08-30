@@ -26,8 +26,8 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 12,
         color: '#fff',
-        fontSize: 22,
-    },
+        fontSize: 16, 
+      },
 
     formButton: {
         backgroundColor: '#fff',

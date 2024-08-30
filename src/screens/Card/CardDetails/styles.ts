@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#11181E',
       alignItems: 'center',
-      padding: 20,
+      padding: 35,
     },
     backButton: {
       alignSelf: 'flex-start',
