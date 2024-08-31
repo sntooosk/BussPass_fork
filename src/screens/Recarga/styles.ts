@@ -69,4 +69,54 @@ container: {
     color: '#FFF',
     fontWeight: 'bold',
   },
+
+  qrContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    padding: 20,
+},
+
+qrCodePlaceholder: {
+    width: 200,
+    height: 200,
+    backgroundColor: '#eee',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+},
+qrButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+},
+qrButton: {
+  marginTop: 22,
+    padding: 10,
+    backgroundColor: '#4E3D8D',
+    borderRadius: 5,
+},
+qrButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+},
+successMessageContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+},
+successImage: {
+    width: 100,
+    height: 100,
+},
+successMessageText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#4E3D8D',
+    fontWeight: 'bold',
+},
 });

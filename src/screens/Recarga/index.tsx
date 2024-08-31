@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Pressable, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Pressable, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { propsStack } from '../../routes/types';
@@ -7,11 +7,14 @@ import { styles } from './styles';
 import { User, getAuth } from 'firebase/auth';
 import { db } from 'src/utils/firebase';
 import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
+import QRCode from 'react-native-qrcode-svg';
 
-export default function TransferScreen() {
+export default function Recarga() {
     const { navigate } = useNavigation<propsStack>();
-    const [saldo, setSaldo] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [saldo, setSaldo] = useState<string>('');
+    const [currentSaldo, setCurrentSaldo] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [showQRCode, setShowQRCode] = useState<boolean>(false);
 
     const auth = getAuth();
     const user: User | null = auth.currentUser;
@@ -22,7 +25,7 @@ export default function TransferScreen() {
                 const userRef = doc(collection(db, "cardsDados"), user.uid);
                 const docSnap = await getDoc(userRef);
                 if (docSnap.exists()) {
-                    setSaldo(docSnap.data().saldo.toString() || '0');
+                    setCurrentSaldo(docSnap.data().saldo || 0);
                 }
             }
         };
@@ -50,28 +53,7 @@ export default function TransferScreen() {
                 return;
             }
 
-            if (user) {
-                const userRef = doc(collection(db, "cardsDados"), user.uid);
-                const docSnap = await getDoc(userRef);
-
-                let currentSaldo = 0;
-                if (docSnap.exists()) {
-                    currentSaldo = docSnap.data().saldo || 0;
-                }
-
-                const newSaldo = currentSaldo + numericSaldo;
-
-                await setDoc(
-                    userRef,
-                    {
-                        saldo: newSaldo
-                    },
-                    { merge: true }
-                );
-
-                Alert.alert("Sucesso", "Saldo recarregado");
-                setSaldo(''); 
-            }
+            setShowQRCode(true);
         } catch (error) {
             Alert.alert(
                 "Erro",
@@ -82,13 +64,35 @@ export default function TransferScreen() {
         }
     };
 
+    const handlePaymentCompleted = async () => {
+        if (user) {
+            const userRef = doc(collection(db, "cardsDados"), user.uid);
+            const newSaldo = currentSaldo + parseFloat(saldo.replace(/^0+/, ''));
+
+            try {
+                await setDoc(
+                    userRef,
+                    { saldo: newSaldo },
+                    { merge: true }
+                );
+
+                Alert.alert("Sucesso", "Recarregado com sucesso");
+
+                setSaldo('');
+                setShowQRCode(false);
+            } catch (error) {
+                Alert.alert("Erro", "Houve um erro ao atualizar o saldo. Tente novamente mais tarde.");
+            }
+        }
+    };
+
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigate("Home")}>
                 <FontAwesome name="arrow-left" size={24} color="#4E3D8D" />
             </TouchableOpacity>
 
-            <Text style={styles.amount}>${saldo}</Text>
+            <Text style={styles.amount}>{`$${saldo || '0'}`}</Text>
 
             <Pressable style={styles.bankSelector}>
                 <Text style={styles.bankText}>BussPass</Text>
@@ -113,6 +117,20 @@ export default function TransferScreen() {
             <TouchableOpacity style={styles.transferButton} onPress={handleSaveSaldo}>
                 <Text style={styles.transferButtonText}>Recarregar</Text>
             </TouchableOpacity>
+
+            {showQRCode && (
+                <View style={styles.qrContainer}>
+                    <QRCode
+                        value={`Valor: ${saldo}`}
+                        size={200}
+                    />
+                    <View style={styles.qrButtons}>
+                        <TouchableOpacity style={styles.qrButton} onPress={handlePaymentCompleted}>
+                            <Text style={styles.qrButtonText}>Pago</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
         </View>
     );
 }
