@@ -10,10 +10,10 @@ import { db } from 'src/utils/firebase';
 
 export default function AddCard() {
     const { navigate } = useNavigation<propsStack>();
-    const [cardName, setCardName] = useState('');
-    const [cardNumber, setCardNumber] = useState('');
-    const [expiryYear, setExpiryYear] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [cardName, setCardName] = useState<string>('');
+    const [cardNumber, setCardNumber] = useState<string>('');
+    const [expiryYear, setExpiryYear] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const auth = getAuth();
     const user: User | null = auth.currentUser;
@@ -112,7 +112,7 @@ export default function AddCard() {
                 placeholder="Número do Cartão"
                 placeholderTextColor={"white"}
                 value={cardNumber}
-                onChangeText={(text) => setCardNumber(text.replace(/[^0-9]/g, '').slice(0, 16))}
+                onChangeText={(text) => setCardNumber(text.replace(/[^0-9]/g, '').slice(0, 8))}
                 keyboardType="numeric"
             />
 
