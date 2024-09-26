@@ -133,9 +133,9 @@ export default function Home() {
 
         <View style={styles.transactionList}>
           {[
-            { id: 1, name: 'Netflix', amount: '$12', icon: 'movie', color: '#fff' },
-            { id: 2, name: 'Paypal', amount: '$10', icon: 'paypal', color: '#fff' },
-            { id: 3, name: 'Paylater', amount: '$2', icon: 'credit-card', color: '#fff' },
+            { id: 1, name: 'Jardim Imperial', amount: '$4', icon: 'movie', color: '#fff' },
+            { id: 2, name: 'Alvinópolis', amount: '$4', icon: 'paypal', color: '#fff' },
+            { id: 3, name: 'Portão', amount: '$4', icon: 'credit-card', color: '#fff' },
           ].map((item) => (
             <View key={item.id} style={styles.transactionItem}>
               <Text style={styles.transactionName}>{item.name}</Text>

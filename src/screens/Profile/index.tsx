@@ -9,6 +9,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
+  RefreshControl,
 } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
 import ProfileImage from "../components/ProfileImage";
@@ -39,6 +40,7 @@ export default function Profile() {
   const [number, setNumber] = useState("");
   const [cpf, setCpf] = useState("");
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const formatBirthdateInput = (inputValue: string): string => {
     return inputValue
@@ -57,39 +59,50 @@ export default function Profile() {
   };
 
   const insertMaskInCpf = (cpf: string): string => {
-  
     const cleanedCpf = cpf.replace(/\D/g, '');
-
     return cleanedCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-};
-
+  };
 
   const userLogout = () => {
     signOut();
   };
 
+  const fetchUserData = async () => {
+    const userProfile = await asyncGetUserProfile();
+    setUsername(userProfile?.username || "");
+    setName(userProfile?.name || "");
+    setLastName(userProfile?.lastName || "");
+    setDob(userProfile?.dob || "");
+    setPhoto(userProfile?.photo || null);
+    setCpf(userProfile?.cpf || "");
+    setNumber(userProfile?.number || "");
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-
-      const userProfile = await asyncGetUserProfile();
-
-      setUsername(userProfile?.username || "");
-      setName(userProfile?.name || "");
-      setLastName(userProfile?.lastName || "");
-      setDob(userProfile?.dob || "");
-      setPhoto(userProfile?.photo || null);
-      setCpf(userProfile?.cpf || "");
-      setNumber(userProfile?.number || "");
-    }
     fetchUserData();
   }, []);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchUserData();
+    setRefreshing(false);
+  };
+
   const handleChoosePhoto = async () => {
     try {
-      const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+      let finalStatus = status;
 
-      if (!granted) {
-        Alert.alert("Permissão negada");
+      if (status !== "granted") {
+        const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        finalStatus = newStatus;
+      }
+
+      if (finalStatus !== "granted") {
+        Alert.alert(
+          "Permissão necessária",
+          "Precisamos de acesso à sua biblioteca de mídia para que você possa escolher uma foto. Por favor, vá às configurações do seu dispositivo e permita o acesso."
+        );
         return;
       }
 
@@ -176,8 +189,6 @@ export default function Profile() {
   };
 
   return (
-
-
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <View style={styles.header}>
@@ -188,7 +199,15 @@ export default function Profile() {
         </View>
         <Text style={styles.formTitle}>Cadastrar Dados</Text>
         <ProfileImage photo={photo} onPress={handleChoosePhoto} />
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <ScrollView
+          contentContainerStyle={styles.scrollViewContent}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+        >
           <TextInput
             style={styles.formInput}
             placeholder="Nome de usuário"
@@ -256,3 +275,4 @@ export default function Profile() {
     </TouchableWithoutFeedback>
   );
 }
+  
