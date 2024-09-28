@@ -235,7 +235,12 @@ export default function Profile() {
             placeholderTextColor="#fff"
             keyboardType="numeric"
             value={cpf}
-            onChangeText={(text) => setCpf(insertMaskInCpf(text))}
+            onChangeText={(text) => {
+              const cleanedText = text.replace(/\D/g, ''); 
+              if (cleanedText.length <= 11) { 
+                setCpf(insertMaskInCpf(cleanedText));
+              }
+            }}
           />
           <TextInput
             style={styles.formInput}
@@ -275,4 +280,3 @@ export default function Profile() {
     </TouchableWithoutFeedback>
   );
 }
-  

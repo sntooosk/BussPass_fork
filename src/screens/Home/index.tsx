@@ -16,6 +16,7 @@ interface Transaction {
   amount: string;
   date: string;
   icon: 'movie' | 'credit-card' | 'paypal' | 'attach-money' | 'error';
+  type: 'entrada' | 'saida';
 }
 
 export default function Home() {
@@ -30,26 +31,22 @@ export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const fetchUserData = useCallback(async () => {
-    try {
-      if (user) {
-        const userRef = doc(collection(db, "users"), user.uid);
-        const userDoc = await getDoc(userRef);
-        if (userDoc.exists()) {
-          const userData = userDoc.data() as UserProfile;
-          await asyncSetUserProfile(userData);
-          const userProfile = await asyncGetUserProfile();  
-          setPhoto(userProfile?.photo || null);
-        }
+    if (user) {
+      const userRef = doc(collection(db, "users"), user.uid);
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data() as UserProfile;
+        await asyncSetUserProfile(userData);
+        const userProfile = await asyncGetUserProfile();
+        setPhoto(userProfile?.photo || null);
       }
-    } catch (error) {
-      Alert.alert("Erro", "Houve um erro ao carregar os dados do usuário.");
     }
   }, [user]);
 
   const fetchUserCardData = useCallback(() => {
     if (user) {
       const cardRef = doc(collection(db, "cardsDados"), user.uid);
-      const unsubscribe = onSnapshot(cardRef, (cardDoc) => {
+      onSnapshot(cardRef, (cardDoc) => {
         if (cardDoc.exists()) {
           const cardData = cardDoc.data();
           setSaldo(cardData?.saldo ? parseFloat(cardData.saldo) : 0);
@@ -57,15 +54,13 @@ export default function Home() {
           setSaldo(0);
         }
       });
-      return () => unsubscribe();
     }
   }, [user]);
 
-  const fetchTransactions = useCallback(async () => {
-    try {
-      if (user) {
-        const transactionsRef = doc(collection(db, "transactions"), user.uid);
-        const transactionsDoc = await getDoc(transactionsRef);
+  const fetchTransactions = useCallback(() => {
+    if (user) {
+      const transactionsRef = doc(collection(db, "transactions"), user.uid);
+      onSnapshot(transactionsRef, (transactionsDoc) => {
         if (transactionsDoc.exists()) {
           const transactionsData = transactionsDoc.data();
           const userTransactions = transactionsData?.transactions || [];
@@ -73,27 +68,19 @@ export default function Home() {
         } else {
           setTransactions([]);
         }
-      }
-    } catch (error) {
-      Alert.alert("Erro", "Houve um erro ao carregar o extrato de transações.");
+      });
     }
   }, [user]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchUserData();
-    fetchUserCardData();
-    fetchTransactions();
+    await Promise.all([
+      fetchUserData(),
+      fetchUserCardData(),
+      fetchTransactions()
+    ]);
     setRefreshing(false);
   };
-
-  useEffect(() => {
-    if (user) {
-      fetchUserData();
-      fetchUserCardData(); 
-      fetchTransactions();
-    }
-  }, [user, fetchUserData, fetchUserCardData, fetchTransactions]);
 
   const toggleSaldoVisibility = () => {
     setShowSaldo(prev => !prev);
@@ -104,15 +91,19 @@ export default function Home() {
       Alert.alert("Saldo insuficiente!", "Você não tem saldo suficiente para realizar esta transação.");
       return;
     }
+
     const newTransaction: Transaction = {
-      id: String(new Date().getTime()), 
+      id: String(new Date().getTime()),
       name: 'Simulação de Transação',
-      amount: '$4.00', 
+      amount: '-$4.00',
       date: new Date().toLocaleDateString(),
-      icon: 'attach-money', 
+      icon: 'attach-money',
+      type: 'saida'
     };
+
     setTransactions(prev => [newTransaction, ...prev]);
     setSaldo(prev => (prev !== null ? prev - 4 : 0));
+
     if (user) {
       const cardRef = doc(collection(db, "cardsDados"), user.uid);
       const cardDoc = await getDoc(cardRef);
@@ -135,6 +126,14 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await Promise.all([fetchUserData(), fetchUserCardData(), fetchTransactions()]);
+    };
+    
+    fetchData();
+  }, [fetchUserData, fetchUserCardData, fetchTransactions]);
+
   return (
     <ScrollView
       style={styles.container}
@@ -151,7 +150,7 @@ export default function Home() {
               style={styles.profileImage}
             />
           ) : (
-            <MaterialIcons name="person" size={40} color="gray" /> 
+            <MaterialIcons name="person" size={40} color="gray" />
           )}
         </Pressable>
       </View>
@@ -171,7 +170,7 @@ export default function Home() {
             />
           </Pressable>
         </View>
-        
+
         <Text style={styles.cardName}>Cartão</Text>
         <Text style={styles.bankName}>BussPass</Text>
       </View>
@@ -217,7 +216,16 @@ export default function Home() {
                 <Text style={styles.transactionName}>{item.name}</Text>
               </View>
               <View style={styles.transactionDetails}>
-                <Text style={styles.transactionAmount}>{item.amount}</Text>
+                <Text
+                  style={[
+                    styles.transactionAmount,
+                    {
+                      color: item.type === 'saida' ? 'red' : 'green',
+                    },
+                  ]}
+                >
+                  {item.amount}
+                </Text>
                 <Text style={styles.transactionDate}>{item.date}</Text>
               </View>
             </View>
@@ -232,4 +240,4 @@ export default function Home() {
       </Pressable>
     </ScrollView>
   );
-};
+}

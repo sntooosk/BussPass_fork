@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Pressable, Alert, ScrollView } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, Text, Pressable, Alert, ScrollView, TouchableOpacity } from 'react-native';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { propsStack } from '../../routes/types';
 import { styles } from './styles';
@@ -60,12 +60,16 @@ export default function ExtratoScreen() {
       : 'error';
   };
 
+  const getAmountColor = (amount: string) => {
+    return parseFloat(amount.replace('$', '')) < 0 ? styles.negativeAmount : styles.positiveAmount;
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Pressable onPress={() => navigate("Home")}>
-          <MaterialIcons name="arrow-back" size={24} color="#4E3D8D" />
-        </Pressable>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigate("Home")}>
+                <FontAwesome name="arrow-left" size={24} color="#4E3D8D" />
+            </TouchableOpacity>
         <Text style={styles.title}>Extrato</Text>
         <MaterialIcons name="receipt" size={30} color="#fff" />
       </View>
@@ -81,7 +85,9 @@ export default function ExtratoScreen() {
                 <Text style={styles.transactionName}>{item.name}</Text>
               </View>
               <View style={styles.transactionDetails}>
-                <Text style={styles.transactionAmount}>{item.amount}</Text>
+                <Text style={[styles.transactionAmount, getAmountColor(item.amount)]}>
+                  {item.amount}
+                </Text>
                 <Text style={styles.transactionDate}>{item.date}</Text>
               </View>
             </View>

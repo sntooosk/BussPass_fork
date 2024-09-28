@@ -72,4 +72,16 @@ export const styles = StyleSheet.create({
     color: '#999',
     marginTop: 16,
   },
+
+  positiveAmount: {
+    color: 'green',
+  },
+  
+  negativeAmount: {
+    color: 'red',
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 20,
+  },
 });
