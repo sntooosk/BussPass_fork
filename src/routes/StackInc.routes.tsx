@@ -6,7 +6,7 @@ import Profile from "src/screens/Profile";
 import AddCard from "src/screens/Card/AddCard";
 import CardDetails from "src/screens/Card/CardDetails";
 import Recarga from "src/screens/Recarga"
-import SignIn from "src/screens/SignIn";
+import Extrato from "src/screens/Extrato";
 
 const { Screen, Navigator } =
   createNativeStackNavigator<propsNavigationStack>();
@@ -25,19 +25,25 @@ export default function StackIncRoutes() {
         component={Profile}
         options={{ headerShown: false, gestureEnabled: false }}
       />
-       <Screen
+      <Screen
         name="AddCard"
         component={AddCard}
         options={{ headerShown: false, gestureEnabled: false }}
       />
-       <Screen
+      <Screen
         name="CardDetails"
         component={CardDetails}
         options={{ headerShown: false, gestureEnabled: false }}
       />
-       <Screen
+      <Screen
         name="Recarga"
         component={Recarga}
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
+
+      <Screen
+        name="Extrato"
+        component={Extrato}
         options={{ headerShown: false, gestureEnabled: false }}
       />
 

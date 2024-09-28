@@ -11,8 +11,8 @@ import QRCode from 'react-native-qrcode-svg';
 
 export default function Recarga() {
     const { navigate } = useNavigation<propsStack>();
-    const [saldo, setSaldo] = useState<string>('');
-    const [currentSaldo, setCurrentSaldo] = useState<number>(0);
+    const [saldo, setSaldo] = useState<string>(''); // Armazena o valor digitado
+    const [currentSaldo, setCurrentSaldo] = useState<number>(0); // Armazena o saldo atual do banco
     const [loading, setLoading] = useState<boolean>(false);
     const [showQRCode, setShowQRCode] = useState<boolean>(false);
 
@@ -33,19 +33,19 @@ export default function Recarga() {
     }, [user]);
 
     const handlePress = (value: string) => {
-        setSaldo(prev => prev + value);
+        setSaldo(prev => prev + value); // Atualiza o valor digitado
     };
 
     const handleDelete = () => {
-        setSaldo(prev => prev.slice(0, -1));
+        setSaldo(prev => prev.slice(0, -1)); // Remove o último dígito
     };
 
     const handleSaveSaldo = async () => {
         try {
             setLoading(true);
 
-            const cleanedSaldo = saldo.replace(/^0+/, '');
-            const numericSaldo = parseFloat(cleanedSaldo);
+            const cleanedSaldo = saldo.replace(/^0+/, ''); // Remove zeros à esquerda
+            const numericSaldo = parseFloat(cleanedSaldo); // Converte para número
 
             if (isNaN(numericSaldo) || numericSaldo <= 0) {
                 Alert.alert("Erro", "Preencha um saldo válido.");
@@ -53,12 +53,9 @@ export default function Recarga() {
                 return;
             }
 
-            setShowQRCode(true);
+            setShowQRCode(true); // Exibe o QR Code
         } catch (error) {
-            Alert.alert(
-                "Erro",
-                "Houve um erro ao salvar os dados. Tente novamente mais tarde."
-            );
+            Alert.alert("Erro", "Houve um erro ao salvar os dados. Tente novamente mais tarde.");
         } finally {
             setLoading(false);
         }
@@ -67,19 +64,20 @@ export default function Recarga() {
     const handlePaymentCompleted = async () => {
         if (user) {
             const userRef = doc(collection(db, "cardsDados"), user.uid);
-            const newSaldo = currentSaldo + parseFloat(saldo.replace(/^0+/, ''));
+            const newSaldo = currentSaldo + parseFloat(saldo.replace(/^0+/, '')); // Soma o saldo atual com o valor da recarga
 
             try {
                 await setDoc(
                     userRef,
-                    { saldo: newSaldo },
+                    { saldo: newSaldo }, // Atualiza o saldo no Firestore
                     { merge: true }
                 );
 
                 Alert.alert("Sucesso", "Recarregado com sucesso");
 
-                setSaldo('');
-                setShowQRCode(false);
+                setSaldo(''); // Limpa o campo de saldo
+                setShowQRCode(false); // Oculta o QR Code
+                setCurrentSaldo(newSaldo); // Atualiza o saldo atual
             } catch (error) {
                 Alert.alert("Erro", "Houve um erro ao atualizar o saldo. Tente novamente mais tarde.");
             }
@@ -104,7 +102,7 @@ export default function Recarga() {
                     <TouchableOpacity
                         key={index}
                         style={styles.numButton}
-                        onPress={() => handlePress(num)}
+                        onPress={() => handlePress(num)} // Atualiza o saldo digitado
                     >
                         <Text style={styles.numText}>{num}</Text>
                     </TouchableOpacity>
@@ -121,7 +119,7 @@ export default function Recarga() {
             {showQRCode && (
                 <View style={styles.qrContainer}>
                     <QRCode
-                        value={`Valor: ${saldo}`}
+                        value={`Valor: ${saldo}`} // Valor que será exibido no QR Code
                         size={200}
                     />
                     <View style={styles.qrButtons}>

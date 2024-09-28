@@ -1,9 +1,8 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native'; 
 
 export const styles = StyleSheet.create({
-
   container: {
-    marginTop: 22,
+    marginTop: 28,
     flex: 1,
     backgroundColor: '#11181E',
     padding: 35,
@@ -15,14 +14,9 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
-  },
-  status: {
-    fontSize: 16,
-    color: '#4E3D8D',
-    alignItems: 'center',
   },
   profileImage: {
     width: 40,
@@ -36,6 +30,12 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
     alignItems: 'center',
   },
+  balanceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
   balanceText: {
     fontSize: 18,
     color: '#DDD',
@@ -45,6 +45,10 @@ export const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 'bold',
     color: '#FFF',
+  },
+  saldoIcon: {
+    marginLeft: 10,  
+    color: '#fff',
   },
   cardName: {
     fontSize: 18,
@@ -74,30 +78,23 @@ export const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 24,
   },
-  transactionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
-  },
-  viewAllText: {
-    color: '#fff',
-  },
-  transactionList: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   transactionItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
+    paddingHorizontal: 10,
   },
-  transactionIcon: {
-    marginRight: 16,
+  transactionInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1, 
   },
   transactionName: {
     flex: 1,
@@ -105,15 +102,56 @@ export const styles = StyleSheet.create({
     color: '#fff',
   },
   transactionAmount: {
-    fontSize: 16,
+    fontSize: 18, 
     fontWeight: 'bold',
-    color: '#fff'
+    color: '#4E3D8D',
+    textAlign: 'left',
   },
-  bottomNav: {
+  transactionDetails: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#11181E',
-    paddingVertical: 12,
-    borderRadius: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 4,
   },
+  transactionDate: {
+    fontSize: 12,
+    color: '#999',
+  },
+  noTransactionsText: {
+    textAlign: 'center',
+    color: '#999',
+    marginTop: 16,
+  },
+  simulateButton: {
+    backgroundColor: '#4E3D8D',
+    borderRadius: 20,
+    padding: 12,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  simulateButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
+  viewStatementButton: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 12,
+  },
+
+  viewStatementButtonContainer: {
+    marginLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  transactionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  
 });

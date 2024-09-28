@@ -15,6 +15,7 @@ export type propsNavigationStack = {
   AddCard: undefined | any; // Tela Adiocionar o cartão
   CardDetails: undefined | any; // Tela Detalhe do Cartao
   Recarga: undefined | any; // Tela de Recarga
+  Extrato: undefined | any; // Tela de Extrato
 
 
 };

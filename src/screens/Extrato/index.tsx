@@ -1,0 +1,95 @@
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, Pressable, Alert, ScrollView } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { propsStack } from '../../routes/types';
+import { styles } from './styles';
+import { collection, doc, getDoc } from 'firebase/firestore';
+import { getAuth, User } from 'firebase/auth';
+import { db } from 'src/utils/firebase';
+
+interface Transaction {
+  id: string;
+  name: string;
+  amount: string;
+  date: string;
+  icon: 'movie' | 'credit-card' | 'paypal' | 'attach-money' | 'error';
+}
+
+export default function ExtratoScreen() {
+  const { navigate } = useNavigation<propsStack>();
+  const auth = getAuth();
+  const user: User | null = auth.currentUser;
+
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  const fetchTransactions = useCallback(async () => {
+    try {
+      if (user) {
+        const transactionsRef = doc(collection(db, "transactions"), user.uid);
+        const transactionsDoc = await getDoc(transactionsRef);
+  
+        if (transactionsDoc.exists()) {
+          const transactionsData = transactionsDoc.data();
+          const userTransactions = transactionsData?.transactions || [];
+          setTransactions(userTransactions);
+        } else {
+          setTransactions([]);
+        }
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Houve um erro ao carregar o extrato de transações.");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchTransactions();
+    }
+  }, [user, fetchTransactions]);
+
+  const getValidIconName = (iconName: string): Transaction['icon'] => {
+    const availableIcons: Transaction['icon'][] = [
+      'movie', 
+      'credit-card', 
+      'paypal', 
+      'attach-money'
+    ];
+    return availableIcons.includes(iconName as Transaction['icon']) 
+      ? (iconName as Transaction['icon']) 
+      : 'error';
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Pressable onPress={() => navigate("Home")}>
+          <MaterialIcons name="arrow-back" size={24} color="#4E3D8D" />
+        </Pressable>
+        <Text style={styles.title}>Extrato</Text>
+        <MaterialIcons name="receipt" size={30} color="#fff" />
+      </View>
+
+      <ScrollView style={styles.transactionContainer}>
+        <Text style={styles.sectionTitle}>Histórico de Transações</Text>
+
+        {transactions.length > 0 ? (
+          transactions.map((item) => (
+            <View key={item.id} style={styles.transactionItem}>
+              <View style={styles.transactionInfo}>
+                <MaterialIcons name={getValidIconName(item.icon)} size={24} color="#fff" />
+                <Text style={styles.transactionName}>{item.name}</Text>
+              </View>
+              <View style={styles.transactionDetails}>
+                <Text style={styles.transactionAmount}>{item.amount}</Text>
+                <Text style={styles.transactionDate}>{item.date}</Text>
+              </View>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noTransactionsText}>Nenhuma transação disponível</Text>
+        )}
+      </ScrollView>
+    </View>
+  );
+}

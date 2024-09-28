@@ -3,8 +3,8 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
 
     container: {
-        marginTop: 22,
-        flex: 1,    
+        marginTop: 28,
+        flex: 1,
         backgroundColor: '#11181E',
         alignItems: 'center',
         justifyContent: 'center',
@@ -26,8 +26,8 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 12,
         color: '#fff',
-        fontSize: 20, 
-      },
+        fontSize: 20,
+    },
 
     formButton: {
         backgroundColor: '#fff',
@@ -63,6 +63,33 @@ export const styles = StyleSheet.create({
     formImage: {
         width: 250,
         height: 100,
-    }
+    },
+
+    formInputPassword: {
+        width: '100%',
+        padding: 10,
+        marginVertical: 10,
+        borderColor: '#fff',
+        borderWidth: 1,
+        borderRadius: 12,
+        color: '#fff',
+        fontSize: 20,
+    },
+
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '80%',
+        borderRadius: 5,
+        marginVertical: 10,
+        position: 'relative',
+    },
+
+    iconContainer: {
+        position: 'absolute',
+        right: 15, 
+        top: '50%',
+        transform: [{ translateY: -12 }],
+    },
 
 });

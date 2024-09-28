@@ -89,6 +89,8 @@ export default function AddCard() {
         }
     };
 
+    
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -97,7 +99,7 @@ export default function AddCard() {
                 </Pressable>
             </View>
 
-            <Text style={styles.title}>Add card</Text>
+            <Text style={styles.title}>Adicionar Cartão</Text>
 
             <TextInput
                 style={styles.formInput}

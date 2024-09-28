@@ -4,10 +4,12 @@ import { useAuth } from '../../context/AuthContext';
 import { styles } from '../../utils/styles';
 import { useNavigation } from '@react-navigation/native';
 import { propsStack } from '../../routes/types';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const { signIn, isLoading } = useAuth();
   const { navigate } = useNavigation<propsStack>();
@@ -34,15 +36,24 @@ export default function SignIn() {
         onChangeText={setEmail}
       />
 
-      <TextInput 
-        style={styles.formInput}
-        placeholder="Password"
-        placeholderTextColor="#fff" 
-        autoCapitalize="none"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput 
+          style={styles.formInputPassword} 
+          placeholder="Password"
+          placeholderTextColor="#fff" 
+          autoCapitalize="none"
+          secureTextEntry={!showPassword} 
+          value={password}
+          onChangeText={setPassword}
+        />
+        <Pressable style={styles.iconContainer} onPress={() => setShowPassword(!showPassword)}>
+          <Icon 
+            name={showPassword ? "eye" : "eye-off"} // Alterna o ícone entre olho aberto e fechado
+            size={24} 
+            color="#fff"
+          />
+        </Pressable>
+      </View>
 
       <Pressable 
         style={styles.formButton}

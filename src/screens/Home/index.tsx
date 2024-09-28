@@ -1,31 +1,39 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Pressable, Image, Alert, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, Pressable, Image, Alert, RefreshControl, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { propsStack } from '../../routes/types';
 import { styles } from './styles';
-import { collection, doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, updateDoc, setDoc } from 'firebase/firestore';
 import { getAuth, User } from 'firebase/auth';
 import { db } from 'src/utils/firebase';
 import { UserProfile } from 'src/models/UserProfile';
 import { asyncGetUserProfile, asyncSetUserProfile } from 'src/utils/storage/UserStorage';
 
+interface Transaction {
+  id: string;
+  name: string;
+  amount: string;
+  date: string;
+  icon: 'movie' | 'credit-card' | 'paypal' | 'attach-money' | 'error';
+}
+
 export default function Home() {
   const { navigate } = useNavigation<propsStack>();
-
   const auth = getAuth();
   const user: User | null = auth.currentUser;
 
   const [photo, setPhoto] = useState<string | null>(null);
   const [saldo, setSaldo] = useState<number | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [showSaldo, setShowSaldo] = useState<boolean>(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const fetchUserData = useCallback(async () => {
     try {
       if (user) {
         const userRef = doc(collection(db, "users"), user.uid);
         const userDoc = await getDoc(userRef);
-  
         if (userDoc.exists()) {
           const userData = userDoc.data() as UserProfile;
           await asyncSetUserProfile(userData);
@@ -38,65 +46,137 @@ export default function Home() {
     }
   }, [user]);
 
-  const fetchUserCardData = useCallback(async () => {
+  const fetchUserCardData = useCallback(() => {
+    if (user) {
+      const cardRef = doc(collection(db, "cardsDados"), user.uid);
+      const unsubscribe = onSnapshot(cardRef, (cardDoc) => {
+        if (cardDoc.exists()) {
+          const cardData = cardDoc.data();
+          setSaldo(cardData?.saldo ? parseFloat(cardData.saldo) : 0);
+        } else {
+          setSaldo(0);
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, [user]);
+
+  const fetchTransactions = useCallback(async () => {
     try {
       if (user) {
-        const cardRef = doc(collection(db, "cardsDados"), user.uid);
-        const cardDoc = await getDoc(cardRef);
-  
-        if (cardDoc.exists()) {
-          const cardData = cardDoc.data(); 
-          setSaldo(cardData?.saldo ? parseFloat(cardData.saldo) : 0);
+        const transactionsRef = doc(collection(db, "transactions"), user.uid);
+        const transactionsDoc = await getDoc(transactionsRef);
+        if (transactionsDoc.exists()) {
+          const transactionsData = transactionsDoc.data();
+          const userTransactions = transactionsData?.transactions || [];
+          setTransactions(userTransactions);
+        } else {
+          setTransactions([]);
         }
       }
     } catch (error) {
-      Alert.alert("Erro", "Houve um erro ao carregar os dados do cartão.");
+      Alert.alert("Erro", "Houve um erro ao carregar o extrato de transações.");
     }
   }, [user]);
 
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchUserData();
-    await fetchUserCardData();
+    fetchUserCardData();
+    fetchTransactions();
     setRefreshing(false);
   };
 
   useEffect(() => {
     if (user) {
       fetchUserData();
-      fetchUserCardData();
+      fetchUserCardData(); 
+      fetchTransactions();
     }
-  }, [user, fetchUserData, fetchUserCardData]);
+  }, [user, fetchUserData, fetchUserCardData, fetchTransactions]);
+
+  const toggleSaldoVisibility = () => {
+    setShowSaldo(prev => !prev);
+  };
+
+  const handleSimulateTransaction = async () => {
+    if (saldo !== null && saldo < 4) {
+      Alert.alert("Saldo insuficiente!", "Você não tem saldo suficiente para realizar esta transação.");
+      return;
+    }
+    const newTransaction: Transaction = {
+      id: String(new Date().getTime()), 
+      name: 'Simulação de Transação',
+      amount: '$4.00', 
+      date: new Date().toLocaleDateString(),
+      icon: 'attach-money', 
+    };
+    setTransactions(prev => [newTransaction, ...prev]);
+    setSaldo(prev => (prev !== null ? prev - 4 : 0));
+    if (user) {
+      const cardRef = doc(collection(db, "cardsDados"), user.uid);
+      const cardDoc = await getDoc(cardRef);
+      if (cardDoc.exists()) {
+        await updateDoc(cardRef, {
+          saldo: (cardDoc.data().saldo - 4).toString()
+        });
+        const transactionsRef = doc(collection(db, "transactions"), user.uid);
+        const transactionDoc = await getDoc(transactionsRef);
+        if (transactionDoc.exists()) {
+          await updateDoc(transactionsRef, {
+            transactions: [newTransaction, ...(transactionDoc.data()?.transactions || [])],
+          });
+        } else {
+          await setDoc(transactionsRef, {
+            transactions: [newTransaction],
+          });
+        }
+      }
+    }
+  };
 
   return (
     <ScrollView
       style={styles.container}
       refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
       <View style={styles.header}>
         <Text style={styles.title}>BussPass</Text>
         <Pressable onPress={() => navigate('Profile')}>
-          <Image
-            source={{ uri: photo }}
-            style={styles.profileImage}
-          />
+          {photo ? (
+            <Image
+              source={{ uri: photo }}
+              style={styles.profileImage}
+            />
+          ) : (
+            <MaterialIcons name="person" size={40} color="gray" /> 
+          )}
         </Pressable>
       </View>
 
       <View style={styles.balanceCard}>
         <Text style={styles.balanceText}>Saldo</Text>
-        <Text style={styles.balanceAmount}>$ {saldo !== null ? saldo.toFixed(2) : '0.00'}</Text>
+        <View style={styles.balanceRow}>
+          <Text style={styles.balanceAmount}>
+            {showSaldo ? `$ ${saldo !== null ? saldo.toFixed(2) : '0.00'}` : '****'}
+          </Text>
+          <Pressable onPress={toggleSaldoVisibility}>
+            <MaterialIcons
+              name={showSaldo ? "visibility-off" : "visibility"}
+              size={24}
+              color="#fff"
+              style={styles.saldoIcon}
+            />
+          </Pressable>
+        </View>
+        
         <Text style={styles.cardName}>Cartão</Text>
         <Text style={styles.bankName}>BussPass</Text>
       </View>
 
       <View style={styles.actionRow}>
-
         <Pressable
           style={styles.actionButton}
           onPress={() => navigate("CardDetails")}
@@ -125,25 +205,31 @@ export default function Home() {
       <View style={styles.transactionContainer}>
         <View style={styles.transactionHeader}>
           <Text style={styles.sectionTitle}>Última transação</Text>
-          <Pressable // onPress={() => navigate("")}
-          >
-            <Text style={styles.viewAllText}>Exibir tudo</Text>
+          <Pressable style={styles.viewStatementButtonContainer} onPress={() => navigate("Extrato")}>
+            <Text style={styles.viewStatementButton}>Ver Extrato</Text>
           </Pressable>
         </View>
-
-        <View style={styles.transactionList}>
-          {[
-            { id: 1, name: 'Jardim Imperial', amount: '$4', icon: 'movie', color: '#fff' },
-            { id: 2, name: 'Alvinópolis', amount: '$4', icon: 'paypal', color: '#fff' },
-            { id: 3, name: 'Portão', amount: '$4', icon: 'credit-card', color: '#fff' },
-          ].map((item) => (
+        {transactions.length > 0 ? (
+          transactions.slice(0, 4).map((item) => (
             <View key={item.id} style={styles.transactionItem}>
-              <Text style={styles.transactionName}>{item.name}</Text>
-              <Text style={styles.transactionAmount}>{item.amount}</Text>
+              <View style={styles.transactionInfo}>
+                <MaterialIcons name={item.icon} size={24} color="#fff" />
+                <Text style={styles.transactionName}>{item.name}</Text>
+              </View>
+              <View style={styles.transactionDetails}>
+                <Text style={styles.transactionAmount}>{item.amount}</Text>
+                <Text style={styles.transactionDate}>{item.date}</Text>
+              </View>
             </View>
-          ))}
-        </View>
+          ))
+        ) : (
+          <Text style={styles.noTransactionsText}>Nenhuma transação disponível</Text>
+        )}
       </View>
+
+      <Pressable onPress={handleSimulateTransaction}>
+        <Text style={styles.simulateButton}>Simular Transação</Text>
+      </Pressable>
     </ScrollView>
   );
-}
+};

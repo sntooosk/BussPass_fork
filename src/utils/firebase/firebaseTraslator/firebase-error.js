@@ -6,7 +6,7 @@ export const firebaseErrors = {
     "auth/user-disabled":
       "O usuário correspondente à credencial fornecida foi desativado.",
     "auth/user-not-found": "Nenhum usuário corresponde à credencial fornecida.",
-    "auth/weak-password": "A senha é muito fraca.",
+    "auth/weak-password": "A senha deve ser no minímo 6 digitos",
     "auth/email-already-in-use":
       "Já existe uma conta associada ao endereço de e-mail fornecido.",
     "auth/invalid-email": "O endereço de e-mail fornecido não é válido.",
@@ -40,7 +40,7 @@ export const firebaseErrors = {
       "O tipo especificado para a persistência dos dados é inválido.",
     "auth/unsupported-persistence-type":
       "O ambiente atual não suporta o tipo especificado para a persistência dos dados.",
-    "auth/invalid-credential": "A credencial expirou ou está mal formada.",
+    "auth/invalid-credential": "Email ou Senha incorretos!",
     "auth/wrong-password": "Senha incorreta.",
     "auth/invalid-verification-code":
       "O código de verificação da credencial não é válido.",
