@@ -1,75 +1,61 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Pressable, Alert, ScrollView, TouchableOpacity } from 'react-native';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { propsStack } from '../../routes/types';
-import { styles } from './styles';
-import { collection, doc, getDoc } from 'firebase/firestore';
-import { getAuth, User } from 'firebase/auth';
-import { db } from 'src/utils/firebase';
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, Alert, ScrollView, TouchableOpacity } from "react-native";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { collection, doc, getDoc } from "firebase/firestore";
+import { getAuth, User } from "firebase/auth";
+import { db } from "src/utils/firebase";
+import Transaction from "src/models/Transaction";
+import { styles } from "./styles";
+import { propsStack } from "src/routes/types";
 
-interface Transaction {
-  id: string;
-  name: string;
-  amount: string;
-  date: string;
-  icon: 'movie' | 'credit-card' | 'paypal' | 'attach-money' | 'error';
-}
-
-export default function ExtratoScreen() {
+export default function TelaExtrato() {
   const { navigate } = useNavigation<propsStack>();
   const auth = getAuth();
-  const user: User | null = auth.currentUser;
+  const usuario: User | null = auth.currentUser;
 
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transacoes, setTransacoes] = useState<Transaction[]>([]);
 
-  const fetchTransactions = useCallback(async () => {
+  const buscarTransacoes = useCallback(async () => {
     try {
-      if (user) {
-        const transactionsRef = doc(collection(db, "transactions"), user.uid);
-        const transactionsDoc = await getDoc(transactionsRef);
-  
-        if (transactionsDoc.exists()) {
-          const transactionsData = transactionsDoc.data();
-          const userTransactions = transactionsData?.transactions || [];
-          setTransactions(userTransactions);
+      if (usuario) {
+        const transacoesRef = doc(collection(db, "transacoes"), usuario.uid);
+        const transacoesDoc = await getDoc(transacoesRef);
+
+        if (transacoesDoc.exists()) {
+          const dadosTransacoes = transacoesDoc.data();
+          const transacoesUsuario = dadosTransacoes?.transacoes || [];
+          setTransacoes(transacoesUsuario);
         } else {
-          setTransactions([]);
+          setTransacoes([]);
         }
       }
-    } catch (error) {
+    } catch (erro) {
       Alert.alert("Erro", "Houve um erro ao carregar o extrato de transações.");
     }
-  }, [user]);
+  }, [usuario]);
 
   useEffect(() => {
-    if (user) {
-      fetchTransactions();
+    if (usuario) {
+      buscarTransacoes();
     }
-  }, [user, fetchTransactions]);
+  }, [usuario, buscarTransacoes]);
 
-  const getValidIconName = (iconName: string): Transaction['icon'] => {
-    const availableIcons: Transaction['icon'][] = [
-      'movie', 
-      'credit-card', 
-      'paypal', 
-      'attach-money'
-    ];
-    return availableIcons.includes(iconName as Transaction['icon']) 
-      ? (iconName as Transaction['icon']) 
-      : 'error';
-  };
-
-  const getAmountColor = (amount: string) => {
-    return parseFloat(amount.replace('$', '')) < 0 ? styles.negativeAmount : styles.positiveAmount;
+  const obterCorValor = (valor: string) => {
+    return parseFloat(valor.replace("R$", "")) < 0
+      ? styles.negativeAmount
+      : styles.positiveAmount;
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigate("Home")}>
-                <FontAwesome name="arrow-left" size={24} color="#4E3D8D" />
-            </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigate("Home")}
+        >
+          <FontAwesome name="arrow-left" size={24} color="#4E3D8D" />
+        </TouchableOpacity>
         <Text style={styles.title}>Extrato</Text>
         <MaterialIcons name="receipt" size={30} color="#fff" />
       </View>
@@ -77,15 +63,16 @@ export default function ExtratoScreen() {
       <ScrollView style={styles.transactionContainer}>
         <Text style={styles.sectionTitle}>Histórico de Transações</Text>
 
-        {transactions.length > 0 ? (
-          transactions.map((item) => (
+        {transacoes.length > 0 ? (
+          transacoes.map((item) => (
             <View key={item.id} style={styles.transactionItem}>
               <View style={styles.transactionInfo}>
-                <MaterialIcons name={getValidIconName(item.icon)} size={24} color="#fff" />
                 <Text style={styles.transactionName}>{item.name}</Text>
               </View>
               <View style={styles.transactionDetails}>
-                <Text style={[styles.transactionAmount, getAmountColor(item.amount)]}>
+                <Text
+                  style={[styles.transactionAmount, obterCorValor(item.amount)]}
+                >
                   {item.amount}
                 </Text>
                 <Text style={styles.transactionDate}>{item.date}</Text>
@@ -93,7 +80,9 @@ export default function ExtratoScreen() {
             </View>
           ))
         ) : (
-          <Text style={styles.noTransactionsText}>Nenhuma transação disponível</Text>
+          <Text style={styles.noTransactionsText}>
+            Nenhuma transação disponível
+          </Text>
         )}
       </ScrollView>
     </View>

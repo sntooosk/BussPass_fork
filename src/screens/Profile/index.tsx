@@ -11,7 +11,7 @@ import {
   Keyboard,
   RefreshControl,
 } from "react-native";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from "@expo/vector-icons";
 import ProfileImage from "../components/ProfileImage";
 import { getAuth, User } from "firebase/auth";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
@@ -22,23 +22,28 @@ import { useAuth } from "../../context/AuthContext";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { propsStack } from "src/routes/types";
-import { asyncGetUserProfile, asyncSetUserProfile } from "src/utils/storage/UserStorage";
-import { UserProfile } from "src/models/UserProfile";
+import {
+  asyncGetUserProfile,
+  asyncSetUserProfile,
+} from "src/utils/storage/UserStorage";
+import UserProfile from "src/models/UserProfile";
 
 export default function Profile() {
   const auth = getAuth();
   const { signOut } = useAuth();
   const user: User | null = auth.currentUser;
-
   const { navigate } = useNavigation<propsStack>();
 
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [username, setUsername] = useState("");
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [dob, setDob] = useState("");
-  const [number, setNumber] = useState("");
-  const [cpf, setCpf] = useState("");
+  const [profile, setProfile] = useState<UserProfile>({
+    username: "",
+    name: "",
+    lastName: "",
+    dob: "",
+    photo: null,
+    cpf: "",
+    number: "",
+  });
+
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -59,7 +64,7 @@ export default function Profile() {
   };
 
   const insertMaskInCpf = (cpf: string): string => {
-    const cleanedCpf = cpf.replace(/\D/g, '');
+    const cleanedCpf = cpf.replace(/\D/g, "");
     return cleanedCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
   };
 
@@ -69,13 +74,17 @@ export default function Profile() {
 
   const fetchUserData = async () => {
     const userProfile = await asyncGetUserProfile();
-    setUsername(userProfile?.username || "");
-    setName(userProfile?.name || "");
-    setLastName(userProfile?.lastName || "");
-    setDob(userProfile?.dob || "");
-    setPhoto(userProfile?.photo || null);
-    setCpf(userProfile?.cpf || "");
-    setNumber(userProfile?.number || "");
+    if (userProfile) {
+      setProfile({
+        username: userProfile.username || "",
+        name: userProfile.name || "",
+        lastName: userProfile.lastName || "",
+        dob: userProfile.dob || "",
+        photo: userProfile.photo || null,
+        cpf: userProfile.cpf || "",
+        number: userProfile.number || "",
+      });
+    }
   };
 
   useEffect(() => {
@@ -94,7 +103,8 @@ export default function Profile() {
       let finalStatus = status;
 
       if (status !== "granted") {
-        const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status: newStatus } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
         finalStatus = newStatus;
       }
 
@@ -119,7 +129,10 @@ export default function Profile() {
           result.assets[0].uri.split(".").pop()?.toLowerCase() || "";
 
         if (supportedFormats.includes(fileExtension)) {
-          setPhoto(result.assets[0].uri);
+          setProfile((prevProfile) => ({
+            ...prevProfile,
+            photo: result.assets[0].uri,
+          }));
         } else {
           Alert.alert("Formato de imagem inválido");
         }
@@ -139,14 +152,18 @@ export default function Profile() {
         return;
       }
 
-      if (!username || !name || !lastName || !dob || !number || !cpf) {
-        Alert.alert("Erro", "Preencha todos os campos");
-        setLoading(false);
-        return;
-      }
+      const { username, name, lastName, dob, number, cpf, photo } = profile;
 
-      if (!photo) {
-        Alert.alert("Erro", "Adicione uma foto");
+      if (
+        !username ||
+        !name ||
+        !lastName ||
+        !dob ||
+        !number ||
+        !cpf ||
+        !photo
+      ) {
+        Alert.alert("Erro", "Preencha todos os campos e adicione uma foto");
         setLoading(false);
         return;
       }
@@ -192,53 +209,58 @@ export default function Profile() {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Pressable
-            onPress={() => navigate("Home")}>
+          <Pressable onPress={() => navigate("Home")}>
             <FontAwesome name="arrow-left" size={24} color="#4E3D8D" />
           </Pressable>
         </View>
         <Text style={styles.formTitle}>Cadastrar Dados</Text>
-        <ProfileImage photo={photo} onPress={handleChoosePhoto} />
+        <ProfileImage photo={profile.photo} onPress={handleChoosePhoto} />
         <ScrollView
           contentContainerStyle={styles.scrollViewContent}
           refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
           <TextInput
             style={styles.formInput}
             placeholder="Nome de usuário"
             placeholderTextColor="#fff"
-            onChangeText={setUsername}
-            value={username}
+            onChangeText={(text) =>
+              setProfile((prevProfile) => ({ ...prevProfile, username: text }))
+            }
+            value={profile.username}
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu nome"
             placeholderTextColor="#fff"
-            onChangeText={setName}
-            value={name}
+            onChangeText={(text) =>
+              setProfile((prevProfile) => ({ ...prevProfile, name: text }))
+            }
+            value={profile.name}
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu sobrenome"
             placeholderTextColor="#fff"
-            onChangeText={setLastName}
-            value={lastName}
+            onChangeText={(text) =>
+              setProfile((prevProfile) => ({ ...prevProfile, lastName: text }))
+            }
+            value={profile.lastName}
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu CPF"
             placeholderTextColor="#fff"
             keyboardType="numeric"
-            value={cpf}
+            value={profile.cpf}
             onChangeText={(text) => {
-              const cleanedText = text.replace(/\D/g, ''); 
-              if (cleanedText.length <= 11) { 
-                setCpf(insertMaskInCpf(cleanedText));
+              const cleanedText = text.replace(/\D/g, "");
+              if (cleanedText.length <= 11) {
+                setProfile((prevProfile) => ({
+                  ...prevProfile,
+                  cpf: insertMaskInCpf(cleanedText),
+                }));
               }
             }}
           />
@@ -246,16 +268,26 @@ export default function Profile() {
             style={styles.formInput}
             placeholder="Digite sua data de nascimento"
             placeholderTextColor="#fff"
-            onChangeText={(text) => setDob(formatBirthdateInput(text))}
-            value={dob}
+            onChangeText={(text) =>
+              setProfile((prevProfile) => ({
+                ...prevProfile,
+                dob: formatBirthdateInput(text),
+              }))
+            }
+            value={profile.dob}
             keyboardType="numeric"
           />
           <TextInput
             style={styles.formInput}
             placeholder="Digite seu número de celular"
             placeholderTextColor="#fff"
-            onChangeText={(text) => setNumber(formatNumberInput(text))}
-            value={number}
+            onChangeText={(text) =>
+              setProfile((prevProfile) => ({
+                ...prevProfile,
+                number: formatNumberInput(text),
+              }))
+            }
+            value={profile.number}
             keyboardType="phone-pad"
           />
           <Pressable
@@ -269,10 +301,7 @@ export default function Profile() {
               <Text style={styles.textButton}>Cadastrar Dados</Text>
             )}
           </Pressable>
-          <Pressable
-            style={styles.logoutButton}
-            onPress={userLogout}
-          >
+          <Pressable style={styles.logoutButton} onPress={userLogout}>
             <Text style={styles.textButton}>Logout</Text>
           </Pressable>
         </ScrollView>

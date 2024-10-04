@@ -1,11 +1,10 @@
-
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { propsNavigationStack } from "./types";
 import Home from "src/screens/Home";
 import Profile from "src/screens/Profile";
-import AddCard from "src/screens/Card/AddCard";
-import CardDetails from "src/screens/Card/CardDetails";
-import Recarga from "src/screens/Recarga"
+import AddCard from "src/screens/AddCard";
+import CardDetails from "src/screens/CardDetails";
+import Recarga from "src/screens/Recarga";
 import Extrato from "src/screens/Extrato";
 
 const { Screen, Navigator } =
@@ -14,7 +13,6 @@ const { Screen, Navigator } =
 export default function StackIncRoutes() {
   return (
     <Navigator screenOptions={{ headerShown: false }}>
-
       <Screen
         name="Home"
         component={Home}
@@ -46,7 +44,6 @@ export default function StackIncRoutes() {
         component={Extrato}
         options={{ headerShown: false, gestureEnabled: false }}
       />
-
     </Navigator>
   );
 }

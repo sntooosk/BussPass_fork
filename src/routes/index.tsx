@@ -1,4 +1,3 @@
-
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
 import { useAuth } from "../context/AuthContext";
@@ -10,7 +9,7 @@ export default function Router() {
 
   return (
     <NavigationContainer independent={true}>
-      {authData ? <StackIncRoutes /> : <StackRoutes   />}
+      {authData ? <StackIncRoutes /> : <StackRoutes />}
     </NavigationContainer>
   );
 }
